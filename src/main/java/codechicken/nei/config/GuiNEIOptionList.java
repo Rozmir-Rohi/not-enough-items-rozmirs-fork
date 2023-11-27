@@ -3,7 +3,8 @@ package codechicken.nei.config;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 
-public class GuiNEIOptionList extends GuiOptionList implements GuiYesNoCallback {
+public class GuiNEIOptionList extends GuiOptionList implements GuiYesNoCallback
+{
 
     public GuiNEIOptionList(GuiScreen parent, OptionList optionList, boolean world) {
         super(parent, optionList, world);

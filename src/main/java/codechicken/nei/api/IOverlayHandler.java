@@ -1,10 +1,9 @@
 package codechicken.nei.api;
 
+import codechicken.nei.recipe.IRecipeHandler;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-import codechicken.nei.recipe.IRecipeHandler;
-
-public interface IOverlayHandler {
-
-    void overlayRecipe(GuiContainer firstGui, IRecipeHandler recipe, int recipeIndex, boolean shift);
+public interface IOverlayHandler
+{
+    public void overlayRecipe(GuiContainer firstGui, IRecipeHandler recipe, int recipeIndex, boolean shift);
 }

@@ -1,23 +1,19 @@
 package codechicken.nei.config;
 
+import codechicken.nei.LayoutManager;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.Rectangle;
+import java.util.List;
+
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawString;
 import static codechicken.lib.gui.GuiDraw.drawStringC;
 import static codechicken.lib.gui.GuiDraw.getStringWidth;
 
-import java.awt.Rectangle;
-import java.util.List;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
-import codechicken.nei.LayoutManager;
-import codechicken.nei.NEIClientUtils;
-
-public abstract class OptionButton extends Option {
-
+public abstract class OptionButton extends Option
+{
     protected static final ResourceLocation guiTex = new ResourceLocation("textures/gui/widgets.png");
 
     public final String prefix;
@@ -57,9 +53,10 @@ public abstract class OptionButton extends Option {
     }
 
     public Rectangle buttonSize() {
-        if (getPrefix() == null) return new Rectangle(0, 0, slot.slotWidth(), 20);
+        if (getPrefix() == null)
+            return new Rectangle(0, 0, slot.slotWidth(), 20);
 
-        int width = Math.max(60, getStringWidth(getButtonText()) + 8);
+        int width = Math.max(60, getStringWidth(getButtonText()));
         return new Rectangle(slot.slotWidth() - width, 0, width, 20);
     }
 
@@ -75,34 +72,15 @@ public abstract class OptionButton extends Option {
     }
 
     public String getTooltip() {
-        String tip = null;
-
-        if (tooltip != null) {
-            String s = translateN(tooltip);
-
-            if (!s.equals(namespaced(tooltip))) {
-                tip = s;
-            }
-        }
-
-        if (tip == null && getPrefix() != null) {
-            final int width = getStringWidth(getPrefix());
-            final Rectangle b = buttonSize();
-
-            if (width >= b.x) {
-                tip = translateN(name);
-            }
-        }
-
-        return tip;
+        if (tooltip == null) return null;
+        String s = translateN(tooltip);
+        if (s.equals(namespaced(tooltip))) return null;
+        return s;
     }
 
     public void drawPrefix() {
-        final String prefix = getPrefix();
-        if (prefix != null) {
-            final Rectangle b = buttonSize();
-            drawString(NEIClientUtils.cropText(Minecraft.getMinecraft().fontRenderer, prefix, b.x - 10), 10, 6, -1);
-        }
+        if (getPrefix() != null)
+            drawString(getPrefix(), 10, 6, -1);
     }
 
     public void drawButton(int mx, int my) {
@@ -125,7 +103,9 @@ public abstract class OptionButton extends Option {
 
     @Override
     public void mouseClicked(int x, int y, int button) {
-        if (pointInside(x, y)) if (onClick(button)) playClickSound();
+        if (pointInside(x, y))
+            if (onClick(button))
+                playClickSound();
     }
 
     public boolean onClick(int button) {
@@ -134,7 +114,8 @@ public abstract class OptionButton extends Option {
 
     @Override
     public List<String> handleTooltip(int mx, int my, List<String> currenttip) {
-        if (getTooltip() != null) currenttip.add(getTooltip());
+        if (getTooltip() != null)
+            currenttip.add(getTooltip());
         return currenttip;
     }
 }

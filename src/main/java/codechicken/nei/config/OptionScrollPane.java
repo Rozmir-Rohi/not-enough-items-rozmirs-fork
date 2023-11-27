@@ -1,18 +1,15 @@
 package codechicken.nei.config;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-
+import codechicken.core.gui.GuiScrollPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
-
 import org.lwjgl.opengl.GL11;
 
-import codechicken.core.gui.GuiScrollPane;
+import java.awt.*;
 
-public abstract class OptionScrollPane extends GuiScrollPane {
-
+public abstract class OptionScrollPane extends GuiScrollPane
+{
     public OptionScrollPane() {
         super(0, 0, 0, 0);
         setMargins(24, 4, 20, 4);

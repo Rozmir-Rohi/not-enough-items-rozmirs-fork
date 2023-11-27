@@ -1,24 +1,20 @@
 package codechicken.nei.api;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
-
+import codechicken.nei.VisiblityData;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 
-import codechicken.nei.VisiblityData;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Lets you just override those things you want to
  */
-public class INEIGuiAdapter implements INEIGuiHandler {
-
-    static final Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
-
+public class INEIGuiAdapter implements INEIGuiHandler
+{
     @Override
-    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility)
+    {
         return currentVisibility;
     }
 
@@ -28,22 +24,20 @@ public class INEIGuiAdapter implements INEIGuiHandler {
     }
 
     @Override
-    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui)
+    {
         return null;
     }
 
     @Override
-    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button)
+    {
         return false;
     }
-
+    
     @Override
-    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
-        return false;
-    }
-
-    protected String formattingText(String displayName) {
-        return SPECIAL_REGEX_CHARS.matcher(EnumChatFormatting.getTextWithoutFormattingCodes(displayName))
-                .replaceAll("\\\\$0");
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h)
+    {
+    	return false;
     }
 }

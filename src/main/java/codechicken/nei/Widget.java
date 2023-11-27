@@ -1,34 +1,37 @@
 package codechicken.nei;
 
-import java.util.List;
-
+import codechicken.lib.vec.Rectangle4i;
 import net.minecraft.item.ItemStack;
 
-import codechicken.lib.vec.Rectangle4i;
+import java.util.List;
 
-public abstract class Widget {
-
-    public Widget() {}
+public abstract class Widget
+{
+    public Widget() {
+    }
 
     public abstract void draw(int mx, int my);
 
-    public void postDraw(int mx, int my) {}
-
-    public void postDrawTooltips(int mx, int my, List<String> tooltip) {}
+    public void postDraw(int mx, int my) {
+    }
 
     public boolean handleClick(int mx, int my, int button) {
         return true;
     }
 
-    public void onGuiClick(int mx, int my) {}
+    public void onGuiClick(int mx, int my) {
+    }
 
-    public void mouseUp(int mx, int my, int button) {}
+    public void mouseUp(int mx, int my, int button) {
+
+    }
 
     public boolean handleKeyPress(int keyID, char keyChar) {
         return false;
     }
 
-    public void lastKeyTyped(int keyID, char keyChar) {}
+    public void lastKeyTyped(int keyID, char keyChar) {
+    }
 
     public boolean handleClickExt(int mx, int my, int button) {
         return false;
@@ -38,7 +41,8 @@ public abstract class Widget {
         return false;
     }
 
-    public void update() {}
+    public void update() {
+    }
 
     public Rectangle4i bounds() {
         return new Rectangle4i(x, y, w, h);
@@ -52,15 +56,18 @@ public abstract class Widget {
         return null;
     }
 
-    public void mouseDragged(int mx, int my, int button, long heldTime) {}
+    public void mouseDragged(int mx, int my, int button, long heldTime) {
+    }
 
     public List<String> handleTooltip(int mx, int my, List<String> tooltip) {
         return tooltip;
     }
 
-    public void loseFocus() {}
+    public void loseFocus() {
+    }
 
-    public void gainFocus() {}
+    public void gainFocus() {
+    }
 
     public int x;
     public int y;

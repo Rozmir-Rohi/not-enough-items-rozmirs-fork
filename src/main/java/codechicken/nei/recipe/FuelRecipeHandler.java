@@ -1,23 +1,21 @@
 package codechicken.nei.recipe;
 
-import static codechicken.nei.NEIClientUtils.translate;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import net.minecraft.client.Minecraft;
+import codechicken.nei.NEIClientUtils;
+import codechicken.nei.PositionedStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
-import codechicken.nei.NEIClientUtils;
-import codechicken.nei.PositionedStack;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-public class FuelRecipeHandler extends FurnaceRecipeHandler {
+import static codechicken.nei.NEIClientUtils.translate;
 
-    public class CachedFuelRecipe extends CachedRecipe {
-
+public class FuelRecipeHandler extends FurnaceRecipeHandler
+{
+    public class CachedFuelRecipe extends CachedRecipe
+    {
         public final FuelPair fuel;
 
         public CachedFuelRecipe(FuelPair fuel) {
@@ -51,31 +49,24 @@ public class FuelRecipeHandler extends FurnaceRecipeHandler {
         return NEIClientUtils.translate("recipe.fuel");
     }
 
-    @SuppressWarnings("unchecked")
     private void loadAllSmelting() {
-        // Note: Not safe as written for parallelStream
-        final Map<ItemStack, ItemStack> smeltingRecipes = (Map<ItemStack, ItemStack>) FurnaceRecipes.smelting()
-                .getSmeltingList();
-        smeltingRecipes.entrySet().stream().map(recipe -> new SmeltingPair(recipe.getKey(), recipe.getValue()))
-                .collect(Collectors.toCollection(() -> mfurnace));
+        Map<ItemStack, ItemStack> recipes = (Map<ItemStack, ItemStack>) FurnaceRecipes.smelting().getSmeltingList();
+
+        for (Entry<ItemStack, ItemStack> recipe : recipes.entrySet())
+            mfurnace.add(new SmeltingPair(recipe.getKey(), recipe.getValue()));
     }
 
     @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
-        // Note: Not safe as written for parallelStream
         if (outputId.equals("fuel") && getClass() == FuelRecipeHandler.class)
-            afuels.stream().map(CachedFuelRecipe::new).collect(Collectors.toCollection(() -> arecipes));
+            for (FuelPair fuel : afuels)
+                arecipes.add(new CachedFuelRecipe(fuel));
     }
 
     public void loadUsageRecipes(ItemStack ingredient) {
-        // Note: Not safe as written for parallelStream
-        afuels.stream().filter(fuel -> fuel != null && fuel.stack != null && fuel.stack.contains(ingredient))
-                .map(CachedFuelRecipe::new).collect(Collectors.toCollection(() -> arecipes));
-    }
-
-    @Override
-    public String specifyTransferRect() {
-        return "fuel";
+        for (FuelPair fuel : afuels)
+            if (fuel.stack.contains(ingredient))
+                arecipes.add(new CachedFuelRecipe(fuel));
     }
 
     public String getOverlayIdentifier() {
@@ -83,14 +74,26 @@ public class FuelRecipeHandler extends FurnaceRecipeHandler {
     }
 
     @Override
-    public void drawExtras(int recipe) {
-        super.drawExtras(recipe);
+    public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe) {
         CachedFuelRecipe crecipe = (CachedFuelRecipe) arecipes.get(recipe);
         FuelPair fuel = crecipe.fuel;
-        NumberFormat numberInstance = NumberFormat.getNumberInstance();
-        numberInstance.setMaximumFractionDigits(2);
-        String smeltCount = numberInstance.format(fuel.burnTime / 200f);
-        Minecraft.getMinecraft().fontRenderer
-                .drawString(translate("recipe.fuel.smeltCount", smeltCount), 73, 51, 0xFF000000);
+        float burnTime = fuel.burnTime / 200F;
+
+        if (gui.isMouseOver(fuel.stack, recipe) && burnTime < 1) {
+            burnTime = 1F / burnTime;
+            String s_time = Float.toString(burnTime);
+            if (burnTime == Math.round(burnTime))
+                s_time = Integer.toString((int) burnTime);
+
+            currenttip.add(translate("recipe.fuel.required", s_time));
+        } else if ((gui.isMouseOver(crecipe.getResult(), recipe) || gui.isMouseOver(crecipe.getIngredient(), recipe)) && burnTime > 1) {
+            String s_time = Float.toString(burnTime);
+            if (burnTime == Math.round(burnTime))
+                s_time = Integer.toString((int) burnTime);
+
+            currenttip.add(translate("recipe.fuel." + (gui.isMouseOver(crecipe.getResult(), recipe) ? "produced" : "processed"), s_time));
+        }
+
+        return currenttip;
     }
 }

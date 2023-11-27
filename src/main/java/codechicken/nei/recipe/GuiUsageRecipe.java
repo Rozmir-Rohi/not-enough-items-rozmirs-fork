@@ -1,68 +1,53 @@
 package codechicken.nei.recipe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import net.minecraft.client.Minecraft;
-
-import codechicken.nei.NEIClientConfig;
+import codechicken.core.TaskProfiler;
 import codechicken.nei.NEIClientUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
 
-public class GuiUsageRecipe extends GuiRecipe<IUsageHandler> {
+import java.util.ArrayList;
 
-    public static ArrayList<IUsageHandler> usagehandlers = new ArrayList<>();
-    public static ArrayList<IUsageHandler> serialUsageHandlers = new ArrayList<>();
-
+public class GuiUsageRecipe extends GuiRecipe
+{
     public static boolean openRecipeGui(String inputId, Object... ingredients) {
-        RecipeHandlerQuery<IUsageHandler> recipeQuery = new RecipeHandlerQuery<>(
-                h -> getUsageOrCatalystHandler(h, inputId, ingredients),
-                usagehandlers,
-                serialUsageHandlers,
-                "Error while looking up usage recipe",
-                "inputId: " + inputId,
-                "ingredients: " + Arrays.toString(ingredients));
-        ArrayList<IUsageHandler> handlers = recipeQuery.runWithProfiling("recipe.concurrent.usage");
-        if (handlers.isEmpty()) return false;
-
         Minecraft mc = NEIClientUtils.mc();
-        BookmarkRecipeId recipeId = getCurrentRecipe(mc.currentScreen);
-        GuiUsageRecipe gui = new GuiUsageRecipe(handlers, recipeId);
+        GuiContainer prevscreen = mc.currentScreen instanceof GuiContainer ? (GuiContainer) mc.currentScreen : null;
 
-        mc.displayGuiScreen(gui);
+        TaskProfiler profiler = ProfilerRecipeHandler.getProfiler();
+        ArrayList<IUsageHandler> handlers = new ArrayList<>();
+        for (IUsageHandler usagehandler : usagehandlers) {
+            profiler.start(usagehandler.getRecipeName());
+            IUsageHandler handler = usagehandler.getUsageHandler(inputId, ingredients);
+            if (handler.numRecipes() > 0)
+                handlers.add(handler);
+        }
+        profiler.end();
+        if (handlers.isEmpty())
+            return false;
 
-        gui.openTargetRecipe(gui.recipeId);
-
+        mc.displayGuiScreen(new GuiUsageRecipe(prevscreen, handlers));
         return true;
     }
 
-    private GuiUsageRecipe(ArrayList<IUsageHandler> handlers, BookmarkRecipeId recipeId) {
-        super(NEIClientUtils.mc().currentScreen);
-        this.currenthandlers = handlers;
-        this.recipeId = recipeId;
+    private GuiUsageRecipe(GuiContainer prevgui, ArrayList<IUsageHandler> handlers) {
+        super(prevgui);
+        currenthandlers = handlers;
     }
 
     public static void registerUsageHandler(IUsageHandler handler) {
-        final String handlerId = handler.getHandlerId();
-        if (usagehandlers.stream().anyMatch(h -> h.getHandlerId().equals(handlerId))
-                || serialUsageHandlers.stream().anyMatch(h -> h.getHandlerId().equals(handlerId)))
-            return;
-
-        if (NEIClientConfig.serialHandlers.contains(handlerId)) serialUsageHandlers.add(handler);
-        else usagehandlers.add(handler);
-    }
-
-    private static IUsageHandler getUsageOrCatalystHandler(IUsageHandler handler, String inputId,
-            Object... ingredients) {
-        boolean skipCatalyst = NEIClientUtils.controlKey();
-        if (NEIClientConfig.areJEIStyleRecipeCatalystsVisible() && !skipCatalyst) {
-            return handler.getUsageAndCatalystHandler(inputId, ingredients);
-        } else {
-            return handler.getUsageHandler(inputId, ingredients);
+        for (IUsageHandler handler1 : usagehandlers) {
+            if (handler1.getClass() == handler.getClass())
+                return;
         }
+
+        usagehandlers.add(handler);
     }
 
-    @Override
-    public ArrayList<IUsageHandler> getCurrentRecipeHandlers() {
+    public ArrayList<? extends IRecipeHandler> getCurrentRecipeHandlers() {
         return currenthandlers;
     }
+
+    public ArrayList<IUsageHandler> currenthandlers;
+
+    public static ArrayList<IUsageHandler> usagehandlers = new ArrayList<>();
 }

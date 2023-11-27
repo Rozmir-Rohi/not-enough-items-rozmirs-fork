@@ -1,31 +1,29 @@
 package codechicken.nei;
 
-import static codechicken.lib.gui.GuiDraw.displaySize;
-import static codechicken.lib.gui.GuiDraw.drawString;
-import static codechicken.lib.gui.GuiDraw.drawTooltipBox;
-import static codechicken.lib.gui.GuiDraw.getStringWidth;
-
-import java.awt.Dimension;
-import java.awt.Point;
-import java.util.List;
-
+import codechicken.lib.config.ConfigTag;
+import codechicken.nei.KeyManager.IKeyStateTracker;
+import codechicken.nei.api.ItemInfo;
+import codechicken.nei.guihook.GuiContainerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import codechicken.lib.config.ConfigTag;
-import codechicken.nei.KeyManager.IKeyStateTracker;
-import codechicken.nei.api.ItemInfo;
-import codechicken.nei.guihook.GuiContainerManager;
-import codechicken.nei.recipe.StackInfo;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
-public class HUDRenderer implements IKeyStateTracker {
+import static codechicken.lib.gui.GuiDraw.displaySize;
+import static codechicken.lib.gui.GuiDraw.drawString;
+import static codechicken.lib.gui.GuiDraw.drawTooltipBox;
+import static codechicken.lib.gui.GuiDraw.getStringWidth;
 
+public class HUDRenderer implements IKeyStateTracker
+{
     @Override
     public void tickKeyStates() {
         if (KeyManager.keyStates.get("world.highlight_tips").down) {
@@ -36,28 +34,37 @@ public class HUDRenderer implements IKeyStateTracker {
 
     public static void renderOverlay() {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.currentScreen == null && mc.theWorld != null
-                && !mc.gameSettings.keyBindPlayerList.getIsKeyPressed()
-                && NEIClientConfig.getBooleanSetting("world.highlight_tips")
-                && mc.objectMouseOver != null
-                && mc.objectMouseOver.typeOfHit == MovingObjectType.BLOCK) {
+        if (mc.currentScreen == null &&
+                mc.theWorld != null &&
+                !mc.gameSettings.keyBindPlayerList.getIsKeyPressed() &&
+                NEIClientConfig.getBooleanSetting("world.highlight_tips") &&
+                mc.objectMouseOver != null &&
+                mc.objectMouseOver.typeOfHit == MovingObjectType.BLOCK) {
             World world = mc.theWorld;
-            ItemStack[] items = ItemInfo.getIdentifierItems(world, mc.thePlayer, mc.objectMouseOver)
-                    .toArray(new ItemStack[0]);
+            ArrayList<ItemStack> items = ItemInfo.getIdentifierItems(world, mc.thePlayer, mc.objectMouseOver);
+            if (items.isEmpty())
+                return;
 
-            if (items.length == 0) return;
-
-            ItemStack stack = StackInfo.getItemStackWithMinimumDamage(items);
+            int minDamage = Integer.MAX_VALUE;
+            ItemStack stack = null;
+            for(ItemStack astack : items) {
+                if(astack.getItem() != null && astack.getItemDamage() < minDamage) {
+                    stack = astack;
+                    minDamage = stack.getItemDamage();
+                }
+            }
 
             renderOverlay(stack, ItemInfo.getText(stack, world, mc.thePlayer, mc.objectMouseOver), getPositioning());
         }
     }
 
     public static void renderOverlay(ItemStack stack, List<String> textData, Point pos) {
-        if ((stack == null || stack.getItem() == null) && textData.isEmpty()) return;
+        if((stack == null || stack.getItem() == null) && textData.isEmpty())
+            return;
 
         int w = 0;
-        for (String s : textData) w = Math.max(w, getStringWidth(s) + 29);
+        for (String s : textData)
+            w = Math.max(w, getStringWidth(s) + 29);
         int h = Math.max(24, 10 + 10 * textData.size());
 
         Dimension size = displaySize();
@@ -78,7 +85,8 @@ public class HUDRenderer implements IKeyStateTracker {
         RenderHelper.enableGUIStandardItemLighting();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-        if (stack != null && stack.getItem() != null) GuiContainerManager.drawItem(x + 5, y + h / 2 - 8, stack);
+        if (stack != null && stack.getItem() != null)
+            GuiContainerManager.drawItem(x + 5, y + h / 2 - 8, stack);
     }
 
     private static Point getPositioning() {

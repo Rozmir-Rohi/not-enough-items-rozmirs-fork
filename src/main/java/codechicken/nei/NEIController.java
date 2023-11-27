@@ -1,17 +1,5 @@
 package codechicken.nei;
 
-import static codechicken.lib.gui.GuiDraw.getMousePosition;
-
-import java.awt.Point;
-import java.util.LinkedList;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemStack;
-
 import codechicken.nei.api.API;
 import codechicken.nei.api.GuiInfo;
 import codechicken.nei.api.IInfiniteItemHandler;
@@ -20,10 +8,20 @@ import codechicken.nei.api.ItemInfo;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
 import codechicken.nei.guihook.IContainerSlotClickHandler;
-import codechicken.nei.recipe.GuiRecipe;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.item.ItemStack;
 
-public class NEIController implements IContainerSlotClickHandler, IContainerInputHandler {
+import java.awt.Point;
+import java.util.LinkedList;
 
+import static codechicken.lib.gui.GuiDraw.getMousePosition;
+
+public class NEIController implements IContainerSlotClickHandler, IContainerInputHandler
+{
     private static final NEIController instance = new NEIController();
 
     public static GuiContainerManager manager;
@@ -46,10 +44,12 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
         deleteMode = false;
         GuiInfo.clearGuiHandlers();
         fastTransferManager = null;
-        if (!NEIClientConfig.isEnabled()) return;
+        if (!NEIClientConfig.isEnabled())
+            return;
 
         fastTransferManager = new FastTransferManager();
-        if (gui instanceof INEIGuiHandler) API.registerNEIGuiHandler((INEIGuiHandler) gui);
+        if (gui instanceof INEIGuiHandler)
+            API.registerNEIGuiHandler((INEIGuiHandler) gui);
     }
 
     public static boolean isSpreading(GuiContainer gui) {
@@ -57,7 +57,8 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
     }
 
     public static void updateUnlimitedItems(InventoryPlayer inventory) {
-        if (!NEIClientConfig.canPerformAction("item") || !NEIClientConfig.hasSMPCounterPart()) return;
+        if (!NEIClientConfig.canPerformAction("item") || !NEIClientConfig.hasSMPCounterPart())
+            return;
 
         LinkedList<ItemStack> beforeStacks = new LinkedList<>();
         for (int i = 0; i < inventory.getSizeInventory(); i++)
@@ -65,7 +66,8 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
-            if (stack == null) continue;
+            if (stack == null)
+                continue;
 
             for (IInfiniteItemHandler handler : ItemInfo.infiniteHandlers)
                 if (handler.canHandleItem(stack) && handler.isItemInfinite(stack))
@@ -76,8 +78,8 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
             ItemStack newstack = inventory.getStackInSlot(i);
 
             if (!NEIServerUtils.areStacksIdentical(beforeStacks.get(i), newstack)) {
-                inventory.setInventorySlotContents(i, beforeStacks.get(i)); // restore in case of SMP fail
-                NEIClientUtils.setSlotContents(i, newstack, false); // sends via SMP handler ;)
+                inventory.setInventorySlotContents(i, beforeStacks.get(i));//restore in case of SMP fail
+                NEIClientUtils.setSlotContents(i, newstack, false);//sends via SMP handler ;)
             }
         }
     }
@@ -85,15 +87,14 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
     public static void processCreativeCycling(InventoryPlayer inventory) {
         if (NEIClientConfig.invCreativeMode() && NEIClientUtils.controlKey()) {
             if (selectedItem != inventory.currentItem) {
-                if (inventory.currentItem == selectedItem + 1 || (inventory.currentItem == 0 && selectedItem == 8)) // foward
+                if (inventory.currentItem == selectedItem + 1 || (inventory.currentItem == 0 && selectedItem == 8))//foward
                 {
                     NEICPH.sendCreativeScroll(1);
                     inventory.currentItem = selectedItem;
-                } else if (inventory.currentItem == selectedItem - 1
-                        || (inventory.currentItem == 8 && selectedItem == 0)) {
-                            NEICPH.sendCreativeScroll(-1);
-                            inventory.currentItem = selectedItem;
-                        }
+                } else if (inventory.currentItem == selectedItem - 1 || (inventory.currentItem == 8 && selectedItem == 0)) {
+                    NEICPH.sendCreativeScroll(-1);
+                    inventory.currentItem = selectedItem;
+                }
             }
         }
 
@@ -102,47 +103,50 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
 
     @Override
     public void beforeSlotClick(GuiContainer gui, int slotIndex, int button, Slot slot, int modifier) {
-        if (!NEIClientConfig.isEnabled()) return;
+        if (!NEIClientConfig.isEnabled())
+            return;
 
         firstheld = NEIClientUtils.getHeldItem();
     }
 
     @Override
-    public boolean handleSlotClick(GuiContainer gui, int slotIndex, int button, Slot slot, int modifier,
-            boolean eventconsumed) {
-        if (eventconsumed || !NEIClientConfig.isEnabled() || isSpreading(gui)) return eventconsumed;
+    public boolean handleSlotClick(GuiContainer gui, int slotIndex, int button, Slot slot, int modifier, boolean eventconsumed) {
+        if (eventconsumed ||
+                !NEIClientConfig.isEnabled() ||
+                isSpreading(gui))
+            return eventconsumed;
 
         if (deleteMode && slotIndex >= 0 && slot != null) {
             if (NEIClientUtils.shiftKey() && button == 0) {
                 ItemStack itemstack1 = slot.getStack();
-                if (itemstack1 != null) NEIClientUtils.deleteItemsOfType(itemstack1);
+                if (itemstack1 != null)
+                    NEIClientUtils.deleteItemsOfType(itemstack1);
 
-            } else if (button == 1) NEIClientUtils.decreaseSlotStack(slot.slotNumber);
-            else NEIClientUtils.deleteSlotStack(slot.slotNumber);
+            } else if (button == 1)
+                NEIClientUtils.decreaseSlotStack(slot.slotNumber);
+            else
+                NEIClientUtils.deleteSlotStack(slot.slotNumber);
             return true;
         }
 
-        if (button == 1 && slot instanceof SlotCrafting) // right click
+        if (button == 1 && slot instanceof SlotCrafting)//right click
         {
-            for (int i1 = 0; i1 < 64; i1++) // click this slot 64 times
+            for (int i1 = 0; i1 < 64; i1++)//click this slot 64 times
                 manager.handleSlotClick(slot.slotNumber, button, 0);
             return true;
         }
 
-        if (NEIClientUtils.controlKey() && modifier != 4 // Drop key pressed:
-                                                         // net.minecraft.client.gui.inventory.GuiContainer.keyTyped
-                && slot != null
-                && slot.getStack() != null
+        if (NEIClientUtils.controlKey()
+                && slot != null && slot.getStack() != null
                 && slot.isItemValid(slot.getStack())) {
             NEIClientUtils.cheatItem(slot.getStack(), button, 1);
             return true;
         }
 
-        if (GuiInfo.hasCustomSlots(gui)) return false;
+        if(GuiInfo.hasCustomSlots(gui))
+            return false;
 
-        if (slotIndex >= 0 && NEIClientUtils.shiftKey()
-                && NEIClientUtils.getHeldItem() != null
-                && !slot.getHasStack()) {
+        if (slotIndex >= 0 && NEIClientUtils.shiftKey() && NEIClientUtils.getHeldItem() != null && !slot.getHasStack()) {
             ItemStack held = NEIClientUtils.getHeldItem();
             manager.handleSlotClick(slot.slotNumber, button, 0);
             if (slot.isItemValid(held) && !ItemInfo.fastTransferExemptions.contains(slot.getClass()))
@@ -161,15 +165,16 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
 
     @Override
     public void afterSlotClick(GuiContainer gui, int slotIndex, int button, Slot slot, int modifier) {
-        if (!NEIClientConfig.isEnabled()) return;
+        if (!NEIClientConfig.isEnabled())
+            return;
 
         ItemStack nowHeld = NEIClientUtils.getHeldItem();
 
-        if (firstheld != nowHeld) pickedUpFromSlot = slotIndex;
+        if (firstheld != nowHeld)
+            pickedUpFromSlot = slotIndex;
 
         if (NEIClientConfig.canPerformAction("item") && NEIClientConfig.hasSMPCounterPart()) {
-            if (heldStackInfinite != null && slot != null
-                    && slot.inventory == NEIClientUtils.mc().thePlayer.inventory) {
+            if (heldStackInfinite != null && slot != null && slot.inventory == NEIClientUtils.mc().thePlayer.inventory) {
                 ItemStack stack = slot.getStack();
                 if (stack != null) {
                     heldStackInfinite.onPlaceInfinite(stack);
@@ -177,7 +182,8 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
                 NEIClientUtils.setSlotContents(slotIndex, stack, true);
             }
 
-            if (firstheld != nowHeld) heldStackInfinite = null;
+            if (firstheld != nowHeld)
+                heldStackInfinite = null;
 
             if (firstheld != nowHeld && nowHeld != null) {
                 for (IInfiniteItemHandler handler : ItemInfo.infiniteHandlers) {
@@ -194,10 +200,14 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
 
     @Override
     public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyCode) {
-        if (!NEIClientConfig.isEnabled() || GuiInfo.hasCustomSlots(gui) || isSpreading(gui)) return false;
+        if (!NEIClientConfig.isEnabled() ||
+                GuiInfo.hasCustomSlots(gui) ||
+                isSpreading(gui))
+            return false;
 
         Slot slot = GuiContainerManager.getSlotMouseOver(gui);
-        if (slot == null) return false;
+        if (slot == null)
+            return false;
 
         int slotIndex = slot.slotNumber;
 
@@ -214,22 +224,16 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
 
     @Override
     public boolean mouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
-        if (!NEIClientConfig.isEnabled() || GuiInfo.hasCustomSlots(gui)
-                || !NEIClientConfig.isMouseScrollTransferEnabled())
+        if (!NEIClientConfig.isEnabled() || GuiInfo.hasCustomSlots(gui))
             return false;
-
-        // slot in GuiRecipe does not contain actual stack
-        // and scroll should be handled by GuiRecipe, not here
-        if (gui instanceof GuiRecipe) return false;
 
         Point mousePos = getMousePosition();
         Slot mouseover = manager.window.getSlotAtPosition(mousePos.x, mousePos.y);
         if (mouseover != null && mouseover.getHasStack()) {
-            if (NEIClientConfig.shouldInvertMouseScrollTransfer()) {
-                scrolled = -scrolled;
-            }
-            if (scrolled > 0) fastTransferManager.transferItem(manager.window, mouseover.slotNumber);
-            else fastTransferManager.retrieveItem(manager.window, mouseover.slotNumber);
+            if (scrolled > 0)
+                fastTransferManager.transferItem(manager.window, mouseover.slotNumber);
+            else
+                fastTransferManager.retrieveItem(manager.window, mouseover.slotNumber);
             return true;
         }
         return false;
@@ -246,26 +250,32 @@ public class NEIController implements IContainerSlotClickHandler, IContainerInpu
     }
 
     @Override
-    public void onKeyTyped(GuiContainer gui, char keyChar, int keyID) {}
+    public void onKeyTyped(GuiContainer gui, char keyChar, int keyID) {
+    }
 
     @Override
-    public void onMouseClicked(GuiContainer gui, int mousex, int mousey, int button) {}
+    public void onMouseClicked(GuiContainer gui, int mousex, int mousey, int button) {
+    }
 
     @Override
-    public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime) {}
+    public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime) {
+    }
 
     @Override
-    public void onMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {}
+    public void onMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
+    }
 
     @Override
-    public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {}
+    public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {
+    }
 
     public static boolean canUseDeleteMode() {
         return !(NEIClientUtils.getGuiContainer() instanceof GuiContainerCreative);
     }
 
     public static void toggleDeleteMode() {
-        if (canUseDeleteMode()) deleteMode = !deleteMode;
+        if(canUseDeleteMode())
+            deleteMode = !deleteMode;
     }
 
     public static boolean getDeleteMode() {

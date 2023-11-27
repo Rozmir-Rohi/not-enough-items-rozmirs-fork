@@ -1,27 +1,25 @@
 package codechicken.nei.config;
 
-import static codechicken.lib.gui.GuiDraw.drawMultilineTip;
-import static codechicken.lib.gui.GuiDraw.fontRenderer;
-import static codechicken.lib.gui.GuiDraw.getMousePosition;
-import static net.minecraft.util.StatCollector.translateToLocal;
+import codechicken.core.gui.GuiCCButton;
+import codechicken.core.gui.GuiScreenWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import static codechicken.lib.gui.GuiDraw.drawMultilineTip;
+import static codechicken.lib.gui.GuiDraw.fontRenderer;
+import static codechicken.lib.gui.GuiDraw.getMousePosition;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
-import org.lwjgl.input.Keyboard;
-
-import codechicken.core.gui.GuiCCButton;
-import codechicken.core.gui.GuiScreenWidget;
-
-public abstract class GuiOptionPane extends GuiScreenWidget {
-
-    public class ScrollPane extends OptionScrollPane {
-
+public abstract class GuiOptionPane extends GuiScreenWidget
+{
+    public class ScrollPane extends OptionScrollPane
+    {
         @Override
         public int contentHeight() {
             return GuiOptionPane.this.contentHeight();
@@ -34,7 +32,6 @@ public abstract class GuiOptionPane extends GuiScreenWidget {
     }
 
     public abstract int contentHeight();
-
     public abstract void drawContent(int mx, int my, float frame);
 
     public ScrollPane pane;
@@ -69,7 +66,8 @@ public abstract class GuiOptionPane extends GuiScreenWidget {
 
     @Override
     public void actionPerformed(String ident, Object... params) {
-        if (ident.equals("back")) Minecraft.getMinecraft().displayGuiScreen(getParentScreen());
+        if (ident.equals("back"))
+            Minecraft.getMinecraft().displayGuiScreen(getParentScreen());
     }
 
     @Override

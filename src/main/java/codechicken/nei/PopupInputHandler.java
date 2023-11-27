@@ -1,56 +1,69 @@
 package codechicken.nei;
 
-import static codechicken.nei.NEIClientConfig.canPerformAction;
-
+import codechicken.nei.guihook.IContainerInputHandler;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-import codechicken.nei.guihook.IContainerInputHandler;
+import static codechicken.nei.NEIClientConfig.canPerformAction;
+import static codechicken.nei.NEIClientConfig.getKeyBinding;
 
-public class PopupInputHandler implements IContainerInputHandler {
-
+public class PopupInputHandler implements IContainerInputHandler
+{
     @Override
-    public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode) {
+    public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode)
+    {
         return false;
     }
 
     @Override
-    public boolean mouseClicked(GuiContainer gui, int mousex, int mousey, int button) {
+    public boolean mouseClicked(GuiContainer gui, int mousex, int mousey, int button)
+    {
         return false;
     }
 
     @Override
-    public void onKeyTyped(GuiContainer gui, char keyChar, int keyID) {}
+    public void onKeyTyped(GuiContainer gui, char keyChar, int keyID)
+    {
+    }
 
     @Override
-    public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyID) {
-
-        if (NEIClientConfig.isKeyHashDown("gui.enchant") && canPerformAction("enchant")) {
+    public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyID)
+    {
+        if(keyID == getKeyBinding("gui.enchant") && canPerformAction("enchant"))
+        {
             NEICPH.sendOpenEnchantmentWindow();
             return true;
         }
-
-        if (NEIClientConfig.isKeyHashDown("gui.potion") && canPerformAction("potion")) {
+        if(keyID == getKeyBinding("gui.potion") && canPerformAction("potion"))
+        {
             NEICPH.sendOpenPotionWindow();
             return true;
         }
-
         return false;
     }
 
     @Override
-    public void onMouseClicked(GuiContainer gui, int mousex, int mousey, int button) {}
+    public void onMouseClicked(GuiContainer gui, int mousex, int mousey, int button)
+    {
+    }
 
     @Override
-    public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {}
+    public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button)
+    {
+    }
 
     @Override
-    public boolean mouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
+    public boolean mouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled)
+    {
         return false;
     }
 
     @Override
-    public void onMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {}
-
+    public void onMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled)
+    {
+    }
+    
     @Override
-    public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime) {}
+    public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime)
+    {
+    }
 }

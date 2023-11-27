@@ -1,18 +1,17 @@
 package codechicken.nei;
 
-import java.util.Collections;
-import java.util.List;
-
+import codechicken.nei.api.INEIGuiAdapter;
+import codechicken.nei.api.TaggedInventoryArea;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 
-import codechicken.nei.api.INEIGuiAdapter;
-import codechicken.nei.api.TaggedInventoryArea;
+import java.util.Collections;
+import java.util.List;
 
-public class NEIChestGuiHandler extends INEIGuiAdapter {
-
+public class NEIChestGuiHandler extends INEIGuiAdapter
+{
     public int chestSize(GuiContainer gui) {
         return ((ContainerChest) gui.inventorySlots).getLowerChestInventory().getSizeInventory();
     }
@@ -24,8 +23,6 @@ public class NEIChestGuiHandler extends INEIGuiAdapter {
 
     @Override
     public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
-        return gui instanceof GuiChest
-                ? Collections.singletonList(new TaggedInventoryArea("Chest", 0, chestSize(gui), gui.inventorySlots))
-                : null;
+        return gui instanceof GuiChest ? Collections.singletonList(new TaggedInventoryArea("Chest", 0, chestSize(gui), gui.inventorySlots)) : null;
     }
 }

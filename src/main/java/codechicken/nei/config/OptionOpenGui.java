@@ -1,14 +1,12 @@
 package codechicken.nei.config;
 
+import codechicken.nei.NEIClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
-import codechicken.nei.NEIClientConfig;
-
-public class OptionOpenGui extends OptionButton {
-
+public class OptionOpenGui extends OptionButton
+{
     public final Class<? extends GuiScreen> guiClass;
-
     public OptionOpenGui(String name, Class<? extends GuiScreen> guiClass) {
         super(name, null, name, null);
         this.guiClass = guiClass;
@@ -19,8 +17,7 @@ public class OptionOpenGui extends OptionButton {
         try {
             Minecraft.getMinecraft().displayGuiScreen(guiClass.getConstructor(Option.class).newInstance(this));
         } catch (Exception e) {
-            NEIClientConfig.logger
-                    .error("Unable to open gui class: " + guiClass.getName() + " from option " + fullName(), e);
+            NEIClientConfig.logger.error("Unable to open gui class: "+guiClass.getName()+" from option "+fullName(), e);
         }
         return true;
     }

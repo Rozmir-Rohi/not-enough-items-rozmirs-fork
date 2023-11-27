@@ -1,5 +1,16 @@
 package codechicken.nei.recipe;
 
+import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.InventoryCraftingDummy;
+import codechicken.nei.NEIClientUtils;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.guihook.GuiContainerManager;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.RecipeFireworks;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -7,22 +18,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.init.Items;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeFireworks;
-
-import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.InventoryCraftingDummy;
-import codechicken.nei.NEIClientUtils;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.guihook.GuiContainerManager;
-
-public class FireworkRecipeHandler extends ShapelessRecipeHandler {
-
-    public class CachedFireworkRecipe extends CachedShapelessRecipe {
-
+public class FireworkRecipeHandler extends ShapelessRecipeHandler
+{
+    public class CachedFireworkRecipe extends CachedShapelessRecipe
+    {
         final LinkedList<Object> itemList = new LinkedList<>();
 
         public final Object[] baseIngredients;
@@ -42,14 +41,16 @@ public class FireworkRecipeHandler extends ShapelessRecipeHandler {
             itemList.clear();
             itemList.addAll(Arrays.asList(baseIngredients));
             int extras = (cycleticks / 40) % (10 - itemList.size());
-            for (int i = 0; i < extras; i++) itemList.add(extraIngred);
+            for (int i = 0; i < extras; i++)
+                itemList.add(extraIngred);
             setIngredients(itemList);
 
             List<PositionedStack> ingreds = getIngredients();
             for (int i = 0; i < 9; i++)
                 inventoryCrafting.setInventorySlotContents(i, i < ingreds.size() ? ingreds.get(i).item : null);
 
-            if (!recipeFireworks.matches(inventoryCrafting, null)) throw new RuntimeException("Invalid Recipe?");
+            if (!recipeFireworks.matches(inventoryCrafting, null))
+                throw new RuntimeException("Invalid Recipe?");
             setResult(recipeFireworks.getCraftingResult(null));
         }
     }
@@ -61,25 +62,35 @@ public class FireworkRecipeHandler extends ShapelessRecipeHandler {
 
     public FireworkRecipeHandler() {
         super();
-        stackorder = new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 0, 1 }, { 1, 1 }, { 2, 1 }, { 0, 2 }, { 1, 2 },
-                { 2, 2 } };
+        stackorder = new int[][]{
+                {0, 0},
+                {1, 0},
+                {2, 0},
+                {0, 1},
+                {1, 1},
+                {2, 1},
+                {0, 2},
+                {1, 2},
+                {2, 2}};
         loadAllFireworks();
     }
 
     private void loadAllFireworks() {
-        // charges
-        Item[] shapes = new Item[] { null, Items.fire_charge, Items.gold_nugget, Items.feather, Items.skull };
-        Item[] effects = new Item[] { null, Items.diamond, Items.glowstone_dust };
+        //charges
+        Item[] shapes = new Item[]{null, Items.fire_charge, Items.gold_nugget, Items.feather, Items.skull};
+        Item[] effects = new Item[]{null, Items.diamond, Items.glowstone_dust};
         for (Item shape : shapes)
-            for (Item effect : effects) genRecipe(Items.gunpowder, shape, effect, Items.dye, Items.dye, 0);
+            for (Item effect : effects)
+                genRecipe(Items.gunpowder, shape, effect, Items.dye, Items.dye, 0);
 
-        // fireworks
+        //fireworks
         genRecipe(Items.gunpowder, Items.paper, Items.firework_charge, 2);
         genRecipe(Items.gunpowder, Items.gunpowder, Items.paper, Items.firework_charge, 2);
         genRecipe(Items.gunpowder, Items.gunpowder, Items.gunpowder, Items.paper, Items.firework_charge, 2);
 
-        // setup a valid charge to use for the recolour recipe
-        for (int i = 0; i < 9; i++) inventoryCrafting.setInventorySlotContents(i, null);
+        //setup a valid charge to use for the recolour recipe
+        for (int i = 0; i < 9; i++)
+            inventoryCrafting.setInventorySlotContents(i, null);
         inventoryCrafting.setInventorySlotContents(0, new ItemStack(Items.gunpowder));
         inventoryCrafting.setInventorySlotContents(1, new ItemStack(Items.dye));
         recipeFireworks.matches(inventoryCrafting, null);
@@ -89,16 +100,20 @@ public class FireworkRecipeHandler extends ShapelessRecipeHandler {
 
     private void genRecipe(Object... params) {
         int numIngreds = 0;
-        for (int i = 0; i < params.length - 2; i++) if (params[i] != null) numIngreds++;
+        for (int i = 0; i < params.length - 2; i++)
+            if (params[i] != null)
+                numIngreds++;
 
         for (int i = 0; i < params.length - 1; i++)
-            if (params[i] instanceof Item) params[i] = new ItemStack((Item) params[i], 1, Short.MAX_VALUE);
+            if (params[i] instanceof Item)
+                params[i] = new ItemStack((Item) params[i], 1, Short.MAX_VALUE);
 
         Object[] ingreds = new Object[numIngreds];
-        for (int i = 0, j = 0; i < params.length - 2; i++) if (params[i] != null) ingreds[j++] = params[i];
+        for (int i = 0, j = 0; i < params.length - 2; i++)
+            if (params[i] != null)
+                ingreds[j++] = params[i];
 
-        mfireworks
-                .add(new CachedFireworkRecipe(ingreds, params[params.length - 2], (Integer) params[params.length - 1]));
+        mfireworks.add(new CachedFireworkRecipe(ingreds, params[params.length - 2], (Integer) params[params.length - 1]));
     }
 
     @Override
@@ -109,7 +124,7 @@ public class FireworkRecipeHandler extends ShapelessRecipeHandler {
                 arecipes.add(recipe);
             }
         }
-        // show random recolouring recipes as well
+        //show random recolouring recipes as well
     }
 
     @Override
@@ -135,7 +150,9 @@ public class FireworkRecipeHandler extends ShapelessRecipeHandler {
     public void onUpdate() {
         if (!NEIClientUtils.shiftKey()) {
             cycleticks++;
-            if (cycleticks % 20 == 0) for (CachedRecipe crecipe : arecipes) ((CachedFireworkRecipe) crecipe).cycle();
+            if (cycleticks % 20 == 0)
+                for (CachedRecipe crecipe : arecipes)
+                    ((CachedFireworkRecipe) crecipe).cycle();
         }
     }
 
@@ -145,16 +162,15 @@ public class FireworkRecipeHandler extends ShapelessRecipeHandler {
     }
 
     @Override
-    public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipe) {
+    public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe) {
         currenttip = super.handleTooltip(gui, currenttip, recipe);
         Point mousepos = GuiDraw.getMousePosition();
         Point relMouse = new Point(mousepos.x - gui.guiLeft, mousepos.y - gui.guiTop);
         Point recipepos = gui.getRecipePosition(recipe);
-        if (currenttip.isEmpty() && GuiContainerManager.getStackMouseOver(gui) == null
-                && new Rectangle(recipepos.x, recipepos.y, 166, 55).contains(relMouse))
-            currenttip.add(
-                    NEIClientUtils.translate(
-                            "recipe.firework.tooltip" + ((CachedFireworkRecipe) arecipes.get(recipe)).recipeType));
+        if (currenttip.isEmpty() && GuiContainerManager.getStackMouseOver(gui) == null &&
+                new Rectangle(recipepos.x, recipepos.y, 166, 55).contains(relMouse))
+            currenttip.add(NEIClientUtils.translate(
+                    "recipe.firework.tooltip" + ((CachedFireworkRecipe) arecipes.get(recipe)).recipeType));
         return currenttip;
     }
 }

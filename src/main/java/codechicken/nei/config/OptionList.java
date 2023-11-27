@@ -1,20 +1,19 @@
 package codechicken.nei.config;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import codechicken.nei.NEIClientConfig;
+import codechicken.nei.config.GuiOptionList.OptionScrollSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
-import codechicken.nei.NEIClientConfig;
-import codechicken.nei.config.GuiOptionList.OptionScrollSlot;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class OptionList extends OptionButton {
-
+public class OptionList extends OptionButton
+{
     public static final OptionList root = new RootOptionList();
 
-    private static class RootOptionList extends OptionList {
-
+    private static class RootOptionList extends OptionList
+    {
         public RootOptionList() {
             super(null);
         }
@@ -42,18 +41,21 @@ public class OptionList extends OptionButton {
 
     public static OptionList getOptionList(String fullName) {
         Option o = root.getOption(fullName);
-        if (o == null) root.addOption(o = new OptionList(fullName));
+        if (o == null)
+            root.addOption(o = new OptionList(fullName));
         return (OptionList) o;
     }
 
     public static void setOptionList(OptionList list) {
         OptionList prev = (OptionList) root.getOption(list.fullName());
-        if (prev == null) root.addOption(list);
+        if (prev == null)
+            root.addOption(list);
         else {
             list.parent = prev.parent;
             list.options = prev.options;
             list.optionList = prev.optionList;
-            for (Option o : list.optionList) o.parent = list;
+            for (Option o : list.optionList)
+                o.parent = list;
             list.parent.options.put(list.fullName(), list);
             list.parent.optionList.remove(prev);
             list.parent.addSorted(list);
@@ -62,7 +64,8 @@ public class OptionList extends OptionButton {
 
     public static String parent(String fullName) {
         int i = fullName.indexOf('.');
-        if (i < 0) return fullName;
+        if (i < 0)
+            return fullName;
         return fullName.substring(0, i);
     }
 
@@ -80,13 +83,15 @@ public class OptionList extends OptionButton {
 
     private OptionList subList(String fullName) {
         OptionList o = (OptionList) getOption(fullName);
-        if (o == null) addOption(o = new OptionList(fullName));
+        if (o == null)
+            addOption(o = new OptionList(fullName));
 
         return o;
     }
 
     public Option getOption(String fullName) {
-        if (fullName.contains(".")) return subList(parent(fullName)).getOption(child(fullName));
+        if (fullName.contains("."))
+            return subList(parent(fullName)).getOption(child(fullName));
 
         return options.get(fullName);
     }
@@ -102,7 +107,8 @@ public class OptionList extends OptionButton {
             return;
         }
 
-        if (options.containsKey(subName)) NEIClientConfig.logger.warn("Replacing option: " + fullName);
+        if (options.containsKey(subName))
+            NEIClientConfig.logger.warn("Replacing option: " + fullName);
 
         options.put(subName, o);
         addSorted(o);
@@ -115,10 +121,9 @@ public class OptionList extends OptionButton {
 
     /**
      * Create an instance of a GuiOptionList subclass for the given parameter list
-     * 
      * @param parent The parent screen for the back button
-     * @param list   The option list to be displayed in the gui
-     * @param world  true if in world config mode, false for global
+     * @param list The option list to be displayed in the gui
+     * @param world true if in world config mode, false for global
      */
     public GuiOptionList getGui(GuiScreen parent, OptionList list, boolean world) {
         return this.parent.getGui(parent, list, world);

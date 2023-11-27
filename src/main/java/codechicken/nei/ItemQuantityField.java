@@ -1,13 +1,22 @@
 package codechicken.nei;
 
-import static codechicken.nei.NEIClientUtils.translate;
-
-public class ItemQuantityField extends TextField {
-
+public class ItemQuantityField extends TextField
+{
     public ItemQuantityField(String ident) {
         super(ident);
         centered = true;
-        field.setDisabledTextColour(0xFF303030);
+    }
+
+    // Find a way to work this this back in
+    public boolean isValid(String string) {
+        if (string.equals(""))
+            return true;
+
+        try {
+            return Integer.parseInt(string) >= 0;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 
     public int intValue() {
@@ -16,16 +25,9 @@ public class ItemQuantityField extends TextField {
 
     public int intValue(String s) {
         try {
-            return Math.max(0, Integer.parseInt(s));
+            return Integer.parseInt(s);
         } catch (NumberFormatException nfe) {
             return 0;
-        }
-    }
-
-    @Override
-    public void gainFocus() {
-        if (text().equals("0")) {
-            setText("");
         }
     }
 
@@ -36,36 +38,7 @@ public class ItemQuantityField extends TextField {
 
     @Override
     public void onTextChange(String oldText) {
-        NEIClientUtils.setItemQuantity(intValue());
+        if (intValue(oldText) != intValue())//hacky recursion stopper
+            NEIClientUtils.setItemQuantity(intValue());
     }
-
-    @Override
-    public void draw(int mousex, int mousey) {
-
-        if (!focused() && intValue() == 0) {
-            field.setText(translate("itempanel.quantity.default"));
-            field.setEnabled(false);
-            super.draw(mousex, mousey);
-            field.setEnabled(true);
-            field.setText("0");
-        } else {
-            super.draw(mousex, mousey);
-        }
-    }
-
-    @Override
-    public boolean onMouseWheel(int i, int mx, int my) {
-        if (!contains(mx, my)) return false;
-        int multiplier = 1;
-        if (NEIClientUtils.shiftKey()) {
-            multiplier = 10;
-        } else if (NEIClientUtils.controlKey()) {
-            multiplier = 64;
-        }
-
-        int quantity = intValue() + i * multiplier;
-        setText(Integer.toString(quantity));
-        return true;
-    }
-
 }
