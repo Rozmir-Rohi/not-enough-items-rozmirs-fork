@@ -21,6 +21,12 @@ This project is a modified version of the Not Enough Items GTNH mod v2.0.1 and i
 
 * Removed color from "No installed plugins.".
 
+
+## Requires the following Mods to work in Minecraft:
+CodeChickenCore-1.7.10-1.0.7.48 (official version) (https://www.curseforge.com/minecraft/mc-mods/codechickencore/files/3293859)
+
+CodeChickenLib-1.7.10-1.1.5.5 (GTNH version) (https://www.curseforge.com/minecraft/mc-mods/codechickenlib-unofficial/files/4192688)
+
  
 ## Incompatability with the following Mods:
 Thaumcraft NEI Plugin - Will crash when auto-fill crafting in Arcane Workbench.
