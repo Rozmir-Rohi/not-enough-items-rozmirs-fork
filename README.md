@@ -1,6 +1,6 @@
 # Not Enough Items Rozmirs Fork
 
-A survival-friendly version of the Not Enough Items mod. Cheat-free when cheats are disabled in a world.
+A survival-friendly version of the Not Enough Items mod for 1.7.10. Cheat-free when cheats are disabled in a world.
 
 This project is a modified version of the Not Enough Items GTNH mod v2.0.1 and is licensed under the GNU Lesser General Public License v3.0.
 
@@ -10,6 +10,7 @@ This project is a modified version of the Not Enough Items GTNH mod v2.0.1 and i
 * Removed Mob Spawners from NEI item panel to fix visual bug when rendering Wither spawner item.
 
 * Removed the bookmarks panel because it was unnecessary.
+
 
 * Renamed mod and modified neimod.info accordingly.
 
