@@ -2,7 +2,7 @@
 
 A survival-friendly version of the Not Enough Items mod. Cheat-free when cheats are disabled in a world.
 
-This is a modified version of Not Enough Items GTNH mod v2.0.1.
+This project is a modified version of the Not Enough Items GTNH mod v2.0.1 and is licensed under the GNU Lesser General Public License v3.0.
 
  
 
@@ -21,11 +21,10 @@ This is a modified version of Not Enough Items GTNH mod v2.0.1.
 * Removed color from "No installed plugins.".
 
  
-## Incompatability with following Mods:
+## Incompatability with the following Mods:
 Thaumcraft NEI Plugin - Will crash when auto-fill crafting in Arcane Workbench.
 
-Lesser Issues:
-	Optifine    or    Just Another Spawner  -  The light level overlay feature will not work, but all other features still work fine.
+Lesser Issues: Optifine    or    Just Another Spawner  -  The light level overlay feature will not work, but all other features still work fine.
 
 
 
@@ -33,8 +32,8 @@ Lesser Issues:
 When you press "Run Client" for the first time with this project in Eclipse, you will be prompted with a window which says "Select an mcp config dir for the deobfuscator".
 
 
-When this happens, in the window select the following folder location on your computer (don't include quotation marks):
+When this happens, in the window select the following folder location on your computer:
 
 	~/.gradle/caches/minecraft/net/minecraftforge/forge/<version>/unpacked/conf
 
-(replace ~ with %USERPROFILE% if using a Windows computer).
+(Replace ~ with %USERPROFILE% if using a Windows computer.)
