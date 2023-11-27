@@ -40,7 +40,7 @@ When this happens, in the window select the following folder location on your co
 (Replace ~ with %USERPROFILE% if using a Windows computer.)
 
 
-### Use of anatawa12's Fork of ForgeGradle 1.2 within Project:
+## Use of anatawa12's Fork of ForgeGradle 1.2 within Project:
 The source code of this project uses anatawa12's fork of ForgeGradle 1.2 as a library under the GNU Lesser General Public License v2.1 (https://choosealicense.com/licenses/lgpl-2.1/).
  
 
