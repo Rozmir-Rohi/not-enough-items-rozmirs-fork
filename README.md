@@ -1,20 +1,25 @@
-# NotEnoughItems - GTNH
+# Not Enough Items Rozmirs Fork
 
-A continuation of NotEnoughItems for 1.7.10 by the developers of Gregtech: New Horizons modpack, with features either inspired and/or backported from JustEnoughItems
+A survival-friendly version of the Not Enough Items mod. Cheat-free when cheats are disabled in a world.
 
- 
-
-We've tested this against all of the mods included in GTNH, as well as a limited set of other mods (like Reika's mods).  Every effort has been made to maintain backwards compatibility, however the focus is on the mods contained in the GTNH modpack.
+This is a modified version of Not Enough Items GTNH v2.0.1.
 
  
 
-## New Features:
+## Modifications to Original Mod:
+* Removed Mob Spawners from NEI item panel to fix visual bug when rendering Wither spawner item.
+* 
+* Removed the bookmarks panel because it was unnecessary.
 
-* Speed - Uses a parallel stream to search the item list over multiple cores, resulting in 2-6x faster searches on average [Feels instantaneous]
-* A textbox for search with most of the features you'd expect - moving forward, backwards, selection, etc
-* Bookmarks!  What are you in the process of crafting? Bookmark it using either 'A' or configure your own key.
-* Utility/Cheat buttons line up and wrap based on GUI size
-* ItemList is no longer regenerated from the ItemRegistry on every inventory load
+* Renamed mod and modified neimod.info accordingly.
+
+* Removed update checker.
+
+* Renamed "Supporters:" to "Supporters of Original Mod:" in mod info, to differentiate from the original mod.
+
+
+* Removed color from "No installed plugins.".
+
  
 ## Other items of note:
 
