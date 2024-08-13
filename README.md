@@ -1,4 +1,4 @@
-# Not Enough Items Rozmirs Fork
+# Not Enough Items Essentials
 
 A survival-friendly version of the Not Enough Items mod for 1.7.10. Cheat-free when cheats are disabled in a world.
 
