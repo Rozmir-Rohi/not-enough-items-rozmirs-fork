@@ -1,4 +1,8 @@
 # Not Enough Items Rozmirs Fork
+**Project Status:** Finished & Finalized
+
+*The developer of this project is retired and does not respond to private messages or GitHub issues.*
+<br><br>
 
 A survival-friendly version of the Not Enough Items mod for 1.7.10. Cheat-free when cheats are disabled in a world.
 
